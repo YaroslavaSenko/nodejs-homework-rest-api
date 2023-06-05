@@ -1,16 +1,16 @@
 const express = require('express')
 
 const contactsController = require('../../controllers/contacts-controller')
-// const schemas = require('../../schemas/contactsSchemas')
+const schemas = require('../../schemas/contactsSchemas')
 
-// const {validateBody} = require("../../decorators")
+const {validateBody} = require("../../decorators")
 const router = express.Router();
 
 router.get('/', contactsController.getAllContacts)
 
 // router.get('/:id', contactsController.getContactById)
 
-// router.post('/', validateBody(schemas.contactAddSchema), contactsController.addContact)
+router.post('/', validateBody(schemas.contactAddSchema), contactsController.addContact)
 
 // router.put('/:id', validateBody(schemas.contactAddSchema), contactsController.updateContactById )
 
