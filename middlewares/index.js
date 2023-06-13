@@ -1,7 +1,10 @@
-const handleMongooseError = require ('./handleMongooseError')
+
 const isValidId = require("./isValidId")
+const authorization = require("./authorization")
+
 
 module.exports = {
-    handleMongooseError,
+    
     isValidId,
+    authorization,
 }

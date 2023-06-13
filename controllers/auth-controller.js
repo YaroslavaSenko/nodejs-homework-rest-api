@@ -2,6 +2,8 @@ const { ctrlWrapper } = require("../decorators");
 const { HttpError } = require("../helpers");
 const { User } = require("../models/user")
 const bcrypt = require("bcryptjs")
+const jwt = require('jsonwebtoken')
+const {SECRET_KEY} = process.env;
 
 
 const register = async(req, res) => {
@@ -32,7 +34,11 @@ const passwordCompare = await bcrypt.compare(password, user.password);
 if (!passwordCompare) {
     throw HttpError(401, "Email or password is wrong")
 }
-const token = "exampletoken"
+
+const payload = {
+    id: user._id,
+}
+const token = jwt.sign(payload,SECRET_KEY, {expiresIn: "23h"})
 
 
 res.status(200).json({
