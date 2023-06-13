@@ -15,7 +15,7 @@ router.post('/', validateBody(schemas.contactAddSchema), contactsController.addC
 
 router.put('/:id', isValidId, validateBody(schemas.contactAddSchema), contactsController.updateContactById )
 
-router.patch("/:id/favorite", isValidId, validateFavourite(schemas.updateFavouriteSchema), contactsController.updateStatusContact)
+router.patch("/:id/favorite", isValidId, validateFavourite(schemas.contactUpdateFavoriteSchema), contactsController.updateStatusContact)
 
 
 router.delete('/:id', isValidId, contactsController.deleteContactById )
