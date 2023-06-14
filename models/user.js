@@ -17,7 +17,8 @@ const userSchema = new Schema({
           enum: ["starter", "pro", "business"],
           default: "starter"
         },
-        token: String
+        token: String,
+
 }, {versionKey: false, timestamps: true})
 
 
@@ -30,10 +31,6 @@ const registerSchema = Joi.object({
       }),
       email: Joi.string().required().messages({
         'any.required': `missing required email field`,
-        
-      }),
-      subscription: Joi.string().required().messages({
-        'any.required': `missing required subscription field`,
         
       }),
       
