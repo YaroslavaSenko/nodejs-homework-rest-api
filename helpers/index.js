@@ -1,6 +1,6 @@
 const HttpError = require('./HttpError')
 const validateReqBody = require('./validateReqBody')
-const handleMongooseError = require('./handleMongooseError')
+const handleMongooseError = require('../middlewares/handleMongooseError')
 
 
 module.exports = {
