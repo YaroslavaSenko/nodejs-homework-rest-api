@@ -10,7 +10,7 @@ const getAllContacts = async (req, res) => {
   const {page =1, limit = 10} = req.query;
   const skip = (page - 1) * limit;
    const result = await Contact.find({owner}, {skip, limit})
-   .populate("owner");
+   .populate("owner", "name email");
    res.json(result)   
   }
 
@@ -18,7 +18,7 @@ const getAllContacts = async (req, res) => {
       const { id } = req.params;
       const result = await Contact.findById(id);
       if (!result) {
-      throw HttpError(404, `Contact with ${id} not found`)
+      throw HttpError(404, `Not found`)
       }
       res.json(result)
   }
