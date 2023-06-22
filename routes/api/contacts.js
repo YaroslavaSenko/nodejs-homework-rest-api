@@ -3,7 +3,7 @@ const express = require('express')
 const contactsController = require('../../controllers/contacts-controller')
 const schemas = require('../../schemas/contactsSchemas')
 
-const {isValidId, authorization, validateBody, validateFavourite} = require("../../middlewares")
+const {isValidId, authorization, validateBody, validateFavourite, upload} = require("../../middlewares")
 
 const router = express.Router();
 
@@ -13,7 +13,7 @@ router.get('/', contactsController.getAllContacts)
 
 router.get('/:id', isValidId, contactsController.getContactById)
 
-router.post('/', validateBody(schemas.contactAddSchema), contactsController.addContact)
+router.post('/', upload.single("poster"), validateBody(schemas.contactAddSchema), contactsController.addContact)
 
 router.put('/:id', isValidId, validateBody(schemas.contactAddSchema), contactsController.updateContactById )
 

@@ -4,7 +4,7 @@ const authorization = require("./authorization")
 const validateBody = require("./validateBody")
 const validateFavourite = require('./validateFavourite')
 const handleMongooseError = require('./handleMongooseError')
-
+const upload = require('./upload')
 
 module.exports = {
     validateBody,
@@ -12,4 +12,5 @@ module.exports = {
     validateFavourite,
     handleMongooseError,
     authorization,
+    upload,
 }

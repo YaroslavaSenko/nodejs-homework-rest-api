@@ -19,6 +19,9 @@ const contactSchema = new Schema({
       owner: {
         type: Schema.Types.ObjectId,
         ref: 'user',
+      },
+      poster: {
+        type: String,
       }
 }, {versionKey: false, timestamps: true})
 
