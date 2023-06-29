@@ -1,13 +1,14 @@
 const { ctrlWrapper } = require("../decorators");
-const { HttpError } = require("../helpers");
+const { HttpError, sendEmail } = require("../helpers");
 const { User } = require("../models/user")
 const bcrypt = require("bcryptjs")
 const jwt = require('jsonwebtoken')
-const {SECRET_KEY} = process.env;
+const {SECRET_KEY, BASE_URL} = process.env;
 const gravatar = require("gravatar");
 const Jimp = require("jimp");
 const path = require("path");
 const fs = require("fs/promises");
+const { uuid } = require('uuidv4');
 
 const avatarDir = path.join(__dirname, "../", "public", "avatars");
 
@@ -21,13 +22,22 @@ const register = async(req, res) => {
     }
 
     const hashPassword = await bcrypt.hash(password, 10)
+    const verificationToken = uuid()
     const avatarURL = gravatar.url(email);
 const newUser = await User.create({
   ...req.body, 
   password: hashPassword,
   avatarURL,
+  verificationToken
 
 });
+const verifyEmail = {
+  to: email,
+  subject: "Verify email",
+  html: `<a target="_blank" href="${BASE_URL}/users/verify/${verificationToken}">Click to verify email</a>`
+}
+
+await sendEmail(verifyEmail);
 
 res.status(201).json({
     user: {
@@ -37,6 +47,42 @@ res.status(201).json({
 })
 }
 
+const verify = async(req, res)=> {
+  const {verificationToken} = req.params;
+  const user = await User.findOne({verificationToken});
+  if(!user){
+      throw HttpError(404, 'User not found')
+  }
+  await User.findByIdAndUpdate(user._id, {verify: true, verificationToken: ""});
+
+  res.status(200).json({
+      message: "Verification successful"
+  })
+}
+
+const resendVerify = async(req, res)=> {
+  const {email} = req.body;
+  const user = await User.findOne({email});
+  if(!user) {
+      throw HttpError(404, "User not found");
+  }
+  if(user.verify) {
+      throw HttpError(400, "Verification has already been passed");
+  }
+
+  const verifyEmail = {
+      to: email,
+      subject: "Verify email",
+      html: `<a target="_blank" href="${BASE_URL}/users/verify/${user.verificationToken}">Click verify email</a>`
+  };
+
+  await sendEmail(verifyEmail);
+
+  res.json({
+      message: "Verification successful"
+  })
+}
+
 
 const login = async (req, res) => {
     const { email, password} = req.body;
@@ -44,6 +90,9 @@ const login = async (req, res) => {
     if (!user) {
       throw HttpError(401, "Email or password is wrong");
     }
+    if(!user.verify) {
+      throw HttpError(401);
+  }
     const passwordCompare = await bcrypt.compare(password, user.password);
     if (!passwordCompare) {
       throw HttpError(401, "Email or password is wrong");
@@ -110,4 +159,6 @@ const login = async (req, res) => {
     getCurrent: ctrlWrapper(getCurrent),
     logout: ctrlWrapper(logout),
     updateAvatar:ctrlWrapper(updateAvatar),
+    verify:ctrlWrapper(verify),
+    resendVerify:ctrlWrapper(resendVerify),
   };
