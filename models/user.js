@@ -2,6 +2,7 @@ const {Schema, model} = require('mongoose')
 const {handleMongooseError} = require('../helpers')
 const Joi = require('joi')
 
+
 const userSchema = new Schema({
         password: {
           type: String,
@@ -61,10 +62,16 @@ const loginSchema = Joi.object({
       }),
            
 })
+const verifySchema = Joi.object({
+  email: Joi.string().required().messages({
+    'any.required': `missing required email field`,
+})
+})
 
 const schemas = {
     registerSchema,
     loginSchema,
+    verifySchema,
 }
 
 const User = model("user",userSchema )
