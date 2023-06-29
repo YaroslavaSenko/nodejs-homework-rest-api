@@ -12,16 +12,24 @@ const nodemailerConfig = {
         pass: UKR_NET_PASSWORD
     }
 }
-
 const transport = nodemailer.createTransport(nodemailerConfig);
 
-const email = {
-    from: UKR_NET_EMAIL,
-    to: "nonaca3352@aramask.com",
-    subject: "Verify email",
-    html: "<p>Verify email</p>"
+// const email = {
+//     from: UKR_NET_EMAIL,
+//     to: "nonaca3352@aramask.com",
+//     subject: "Verify email",
+//     html: "<p>Verify email</p>"
+// }
+
+// transport.sendMail(email)
+//     .then(()=> console.log("Email send success"))
+//     .catch(error => console.log(error.message))
+
+
+const sendEmail = async(data) => {
+    const email = {...data, from: UKR_NET_EMAIL};
+    await transport.sendMail(email);
+    return true;
 }
 
-transport.sendMail(email)
-    .then(()=> console.log("Email send success"))
-    .catch(error => console.log(error.message))
+module.exports = sendEmail;
